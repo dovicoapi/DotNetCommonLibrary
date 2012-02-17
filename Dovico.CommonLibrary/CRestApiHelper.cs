@@ -183,7 +183,7 @@ namespace Dovico.CommonLibrary
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2012-01-10" reason="Created"/>
         /// </history>
-        public static string BuildErrorReturnString(HttpStatusCode iStatusCode, string sDescription, string sContentType)
+        protected static string BuildErrorReturnString(HttpStatusCode iStatusCode, string sDescription, string sContentType)
         {
             WebFaultExceptionDetails wfedContent = new WebFaultExceptionDetails(iStatusCode, sDescription);
             MemoryStream msStream = new MemoryStream();
