@@ -66,21 +66,40 @@ namespace Dovico.CommonLibrary
         /// <returns>string (the response from the API)</returns>
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2011-11-24" reason="Created"/>
+        /// <modified author="C. Gerard Gallant" date="2012-04-23" reason="Created an overload of this method and pushed the code there"/>
         /// </history>
         public static string MakeAPIRequest(string sURI, string sHttpMethod, string sContentType, string sPostPutData,
             string sConsumerSecret, string sDataAccessToken)
         {
-            string sResults = "";
+            // Create our Request/Result object (3rd param is specified as an empty string since the URI has already been generated...version # is
+            // only needed when building up the URI) 
+            APIRequestResult aRequestResult = new APIRequestResult(sConsumerSecret, sDataAccessToken, "");
+            aRequestResult.SetRequestURI(sURI);
+            aRequestResult.RequestHttpMethod = sHttpMethod;
+            aRequestResult.RequestPostPutData = sPostPutData;
 
+            // Call the overloaded method to handle the work and then return the result object to the caller 
+            MakeAPIRequest(aRequestResult);
+            return (aRequestResult.HadRequestError ? aRequestResult.GetRequestErrorMessage() : aRequestResult.RequestResult);
+        }
+
+
+        /// <history>
+        /// <modified author="C. Gerard Gallant" date="2012-04-23" reason="Created"/>
+        /// </history>
+        public static void MakeAPIRequest(APIRequestResult aRequestResult)
+        {
+            string sContentType = aRequestResult.ContentType;
+            string sPostPutData = aRequestResult.RequestPostPutData;
 
             try
             {
                 // Build up our request object
-                HttpWebRequest hwrAPIRequest = (HttpWebRequest)WebRequest.Create(sURI);
-                hwrAPIRequest.Headers["Authorization"] = BuildAuthorizationHeaderContent(sConsumerSecret, sDataAccessToken);
+                HttpWebRequest hwrAPIRequest = (HttpWebRequest)WebRequest.Create(aRequestResult.GetRequestURI());
+                hwrAPIRequest.Headers["Authorization"] = BuildAuthorizationHeaderContent(aRequestResult.ConsumerSecret, aRequestResult.DataAccessToken);
                 hwrAPIRequest.Accept = sContentType;
-                hwrAPIRequest.Method = sHttpMethod; // GET, PUT, POST, DELETE, etc
-                hwrAPIRequest.ContentType = sContentType;
+                hwrAPIRequest.Method = aRequestResult.RequestHttpMethod; // GET, PUT, POST, DELETE, etc
+                hwrAPIRequest.ContentType = sContentType;                
                 hwrAPIRequest.ContentLength = sPostPutData.Length;
 
                 // If there is data to be included with the request then...
@@ -108,7 +127,7 @@ namespace Dovico.CommonLibrary
                 // Read in the response
                 Stream strResponse = hwrResponse.GetResponseStream();
                 StreamReader srReader = new StreamReader(strResponse);
-                sResults = srReader.ReadToEnd();
+                aRequestResult.RequestResult = srReader.ReadToEnd();
                 srReader.Close();
                 strResponse.Close();
 
@@ -163,15 +182,11 @@ namespace Dovico.CommonLibrary
 
 
                 // Build up the return value for the caller for this error message.
-                sResults = BuildErrorReturnString(iStatusCode, sDescription, sContentType);
+                aRequestResult.SetRequestErrorMessage(BuildErrorReturnString(iStatusCode, sDescription, sContentType));
             } // End of the  catch (WebException weException) statement.
-
-
-            // Return the results to the caller
-            return sResults;
         }
 
-
+        
 
         /// <summary>
         /// Returns the string needed by the caller (JSON or XML depending on the content type specified)

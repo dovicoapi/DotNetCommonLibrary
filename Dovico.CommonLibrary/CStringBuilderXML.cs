@@ -37,7 +37,7 @@ namespace Dovico.CommonLibrary
         public void Append(string sString, string sValue)
         {
             Append(sString);
-            Append(EncodeXMLString(sValue));
+            Append(CXMLHelper.FixXMLString(sValue));
         }
         public void AppendDateOnly(string sString, DateTime dtValue)
         {
@@ -77,22 +77,6 @@ namespace Dovico.CommonLibrary
             AppendStartTag(sTagName);
             Append("", dValue);
             AppendEndTag(sTagName);
-        }
-
-
-
-        // Helper to replace all unsafe XML characters with safe ones
-        public static string EncodeXMLString(string sValue)
-        {
-            // Replace all unsafe XML characters with safe ones
-            string sReturn = sValue.Replace("&", "&amp;");
-            sReturn = sReturn.Replace("'", "&apos;");
-            sReturn = sReturn.Replace("\"", "&quot;");
-            sReturn = sReturn.Replace("<", "&lt;");
-            sReturn = sReturn.Replace(">", "&gt;");
-
-            // Return the encoded string to the caller
-            return sReturn;
         }
     }
 }

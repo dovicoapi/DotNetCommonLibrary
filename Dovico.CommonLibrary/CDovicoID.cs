@@ -7,26 +7,29 @@ namespace Dovico.CommonLibrary
     // make sure you use CDovicoID.Parse rather than long.Parse.
     public class CDovicoID
     {       
-        protected long m_lID = 0;
-        public long ID { get { return m_lID; } }
+        // Property
+        public long ID { get; protected set; }
 
         // Constructors
         public CDovicoID() {}
-        public CDovicoID(long lID) { m_lID = lID; }
+        public CDovicoID(long lID) { ID = lID; }
 
 
-        // Implicit conversions to/from a long/CDovicoID
+        // Implicit conversions to a long (from a CDovicoID)
         public static implicit operator long(CDovicoID rhs) { return rhs.ID; }
+
+        // Implicit conversion to a CDovicoID (from a long)
         public static implicit operator CDovicoID(long rhs) { return new CDovicoID(rhs); }
 
-        
+      
+
         // Takes a string and returns a new instance of CDovicoID
         public static CDovicoID Parse(string sValue)
         {
             return new CDovicoID(long.Parse(sValue, NumberStyles.Any, Constants.CULTURE_US_ENGLISH));
         }
-
+        
         // Returns this object as a string
-        public override string ToString() { return m_lID.ToString(Constants.CULTURE_US_ENGLISH); }
+        public override string ToString() { return ID.ToString(Constants.CULTURE_US_ENGLISH); }
     }
 }

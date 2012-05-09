@@ -37,16 +37,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APIRequestResult.cs" />
     <Compile Include="CDovicoID.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CRestApiHelper.cs" />
     <Compile Include="CStringBuilder.cs" />
+    <Compile Include="CStringBuilderSQL.cs" />
     <Compile Include="CStringBuilderXML.cs" />
+    <Compile Include="CXMLHelper.cs" />
+    <Compile Include="CDateHelper.cs" />
+    <Compile Include="Data\CAssignments.cs" />
+    <Compile Include="Data\CEmployee.cs" />
+    <Compile Include="Data\CTimeEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="WebFaultExceptionDetails.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="MIT-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

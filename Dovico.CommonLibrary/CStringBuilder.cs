@@ -6,26 +6,35 @@ namespace Dovico.CommonLibrary
     public class CStringBuilder
     {
         protected StringBuilder m_sbString = new StringBuilder(5000);
-
+        
         // Overloads for adding different types of values to the string builder.
         // 
         // Just the string
         public void Append(string sString) { m_sbString.Append(sString); }
 
-        // A DOVICO ID
+        // An int
+        public void Append(string sString, int iValue)
+        {
+            Append(sString);
+            Append(iValue.ToString(Constants.CULTURE_US_ENGLISH));
+        }
+        
+        // A long
+        public void Append(string sString, long lValue)
+        {
+            Append(sString);
+            Append(lValue.ToString(Constants.CULTURE_US_ENGLISH));
+        }
+
+        // A CDovicoID
         public void Append(string sString, CDovicoID idValue)
         {
-            // Call our 'string' Append function
             Append(sString);
             Append(idValue.ToString());
         }
 
         // A double - uses the default system decimal precision
-        public void Append(string sString, double dValue)
-        {
-            // Round the value to our predefined rounding precision
-            Append(sString, dValue, true, Constants.DEFAULT_DOUBLE_ROUNDING_PRECISION);
-        }
+        public void Append(string sString, double dValue) { Append(sString, dValue, true, Constants.DEFAULT_DOUBLE_ROUNDING_PRECISION); }
 
         // A double - allows one to control the rounding precision of doubles
         public void Append(string sString, double dValue, bool bRoundValue, int iRoundingPrecision)
@@ -38,6 +47,20 @@ namespace Dovico.CommonLibrary
             Append(dValueToAppend.ToString(Constants.CULTURE_US_ENGLISH));
         }
 
+        // A bool
+        public void Append(string sString, bool bValue)
+        {
+            Append(sString);
+            Append((bValue ? Constants.API_BOOL_TRUE : Constants.API_BOOL_FALSE));
+        }
+
+        // A Guid
+        public void Append(string sString, Guid guidValue)
+        {
+            Append(sString);
+            Append(guidValue.ToString());
+        }
+
 
         // Helper to round a value to the requested precision
         protected double RoundValue(double dValue, int iRoundingPrecision)
@@ -46,6 +69,10 @@ namespace Dovico.CommonLibrary
             // than 1912.23 as expected
             return Math.Round(dValue, iRoundingPrecision, MidpointRounding.AwayFromZero);
         }
+
+
+        // Empties the string builder
+        public void Clear() { m_sbString.Clear(); }
 
 
         // Return the string (explicit call)
