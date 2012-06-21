@@ -50,5 +50,18 @@ namespace Dovico.CommonLibrary
             // Return the encoded string to the caller
             return sReturn;
         }
+
+
+        // Helper to replace all unsafe XML characters with safe ones when dealing with an Element (e.g. <Element>SomeValue</Element>)
+        public static string FixXMLStringForElement(string sValue)
+        {
+            // Replace all unsafe XML Element characters with safe ones
+            string sReturn = sValue.Replace("&", "&amp;");
+            sReturn = sReturn.Replace("<", "&lt;");
+            sReturn = sReturn.Replace(">", "&gt;");
+
+            // Return the encoded string to the caller
+            return sReturn;
+        }
     }
 }

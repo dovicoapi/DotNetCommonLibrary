@@ -46,12 +46,16 @@ namespace Dovico.CommonLibrary
         }
 
 
-        // Overloads created that allows one to specify a tag name and a value so that we don't have to keep do AppendStartTag, Append, 
-        // AppendEndTag for every single node build up in the code!
+        //------
+        // The following are overloads created that allow for the creation of Elements. You can specify a tag name and a value so that we don't
+        // have to keep doing AppendStartTag, Append, AppendEndTag for every single element built up in the code!
+        //------
         public void AppendTagsWithValue(string sTagName, string sValue)
         {
+            // NOTE:    Unlike Attributes (e.g. Attrib="SomeValue"), elements (e.g. <Element>SomeValue</Element>) should not have single or 
+            //          double quotes encoded.
             AppendStartTag(sTagName);
-            Append("", sValue);
+            Append(CXMLHelper.FixXMLStringForElement(sValue));
             AppendEndTag(sTagName);
         }
 

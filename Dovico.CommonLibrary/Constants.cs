@@ -19,6 +19,8 @@ namespace Dovico.CommonLibrary
         // Project's information)
         public static long NONE_ID = 0L;
         public static string NONE_CAPTION = "[None]";
+
+        public static long ADMIN_TOKEN_EMPLOYEE_ID = 99L;
         
         // The date format expected and returned by the API
         public static readonly string API_DATE_FORMAT = "yyyy-MM-dd";

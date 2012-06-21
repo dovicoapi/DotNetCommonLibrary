@@ -80,7 +80,18 @@ namespace Dovico.CommonLibrary
 
             // Call the overloaded method to handle the work and then return the result object to the caller 
             MakeAPIRequest(aRequestResult);
-            return (aRequestResult.HadRequestError ? aRequestResult.GetRequestErrorMessage() : aRequestResult.RequestResult);
+            
+            // If there was an error then...
+            if (aRequestResult.HadRequestError)
+            {
+                // Return the error in the content type that was originally requested (xml or json)
+                return BuildErrorReturnString(aRequestResult.RequestErrorStatus, aRequestResult.GetRequestErrorMessage(), sContentType);
+            }
+            else // No errors...
+            {
+                // Return the result
+                return aRequestResult.RequestResult;
+            } // End if (aRequestResult.HadRequestError)
         }
 
 
@@ -182,7 +193,7 @@ namespace Dovico.CommonLibrary
 
 
                 // Build up the return value for the caller for this error message.
-                aRequestResult.SetRequestErrorMessage(BuildErrorReturnString(iStatusCode, sDescription, sContentType));
+                aRequestResult.SetRequestErrorMessage(iStatusCode, sDescription);
             } // End of the  catch (WebException weException) statement.
         }
 
@@ -202,13 +213,13 @@ namespace Dovico.CommonLibrary
         {
             WebFaultExceptionDetails wfedContent = new WebFaultExceptionDetails(iStatusCode, sDescription);
             MemoryStream msStream = new MemoryStream();
-            
+
             // If we're to return JSON data then...
             if (sContentType.Contains(MIME_TYPE_APPLICATION_JSON))
             {
                 // Convert the object into a JSON string
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebFaultExceptionDetails));                
-                ser.WriteObject(msStream, wfedContent);                
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebFaultExceptionDetails));
+                ser.WriteObject(msStream, wfedContent);
             }
             else if ((sContentType.Contains(MIME_TYPE_TEXT_XML)) || (sContentType.Contains(MIME_TYPE_APPLICATION_XML)))
             {

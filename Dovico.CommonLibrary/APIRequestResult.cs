@@ -1,4 +1,5 @@
-﻿
+﻿using System.Net;
+
 namespace Dovico.CommonLibrary
 {
     public class APIRequestResult
@@ -12,22 +13,20 @@ namespace Dovico.CommonLibrary
         public string RequestPostPutData { get; set; }
 
         public bool HadRequestError { get; protected set; }
-        
+        public HttpStatusCode RequestErrorStatus { get; protected set; }
+
         public string RequestResult { get; set; }
         public string ResultPrevPageURI { get; set; }
         public string ResultNextPageURI { get; set; }
 
         // Protected member variables
         protected string m_sRequestURI = "";                        
-        //private bool m_bShowErrorsToUser = true; // By default we show REST API errors to the user
-       // protected bool m_bHadRequestError = false;
         protected string m_sRequestErrorMessage = "";        
-        //private Document m_xdRequestResult = null;
        
 
         
         // Overloaded constructor
-        public APIRequestResult(string sConsumerSecret, string sDataAccessToken, string sApiVersionTargeted)//, boolean bShowErrorsToUser)
+        public APIRequestResult(string sConsumerSecret, string sDataAccessToken, string sApiVersionTargeted)
         {
             ConsumerSecret = sConsumerSecret;
             DataAccessToken = sDataAccessToken;
@@ -37,8 +36,7 @@ namespace Dovico.CommonLibrary
             ContentType = CRestApiHelper.MIME_TYPE_TEXT_XML; // XML
             RequestHttpMethod = "GET"; // Most requests will be GETs so this is the default so that the caller doesn't have to explicitly set it every time  
             RequestPostPutData = "";
-            //m_bShowErrorsToUser = bShowErrorsToUser;
-            
+                        
             // Make sure the result member variables are correctly initialized too
             ResetResultData();
         }
@@ -48,6 +46,7 @@ namespace Dovico.CommonLibrary
         public void ResetResultData()
         {
             HadRequestError = false;
+            RequestErrorStatus = HttpStatusCode.OK;
             m_sRequestErrorMessage = "";
             RequestResult = "";
             ResultPrevPageURI = Constants.URI_NOT_AVAILABLE;
@@ -59,8 +58,7 @@ namespace Dovico.CommonLibrary
         // Getters
         //------------------
         public string GetRequestURI() { return m_sRequestURI; }
-
-        //public bool GetHadRequestError() { return m_bHadRequestError; }
+                
         public string GetRequestErrorMessage() { return m_sRequestErrorMessage; } //this can be turned into a property
 
         //------------------
@@ -70,8 +68,14 @@ namespace Dovico.CommonLibrary
         public void SetRequestURI(string sURI) { m_sRequestURI = sURI; }
 
         // Helper to set the error message and a flag indicating that there was an error
-        public void SetRequestErrorMessage(string sRequestErrorMessage) //this can be turned into a property
+        public void SetRequestErrorMessage(string sRequestErrorMessage)
         {
+            // Just call our overloaded method and say it was a bad request
+            SetRequestErrorMessage(HttpStatusCode.BadRequest, sRequestErrorMessage);
+        }
+        public void SetRequestErrorMessage(HttpStatusCode iRequestErrorMessageStatus, string sRequestErrorMessage)
+        {
+            RequestErrorStatus = iRequestErrorMessageStatus;
             m_sRequestErrorMessage = sRequestErrorMessage;
             HadRequestError = true;
         }
