@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="APIRequestResult.cs" />
     <Compile Include="CDovicoID.cs" />
+    <Compile Include="CEncryption.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CRestApiHelper.cs" />
     <Compile Include="CStringBuilder.cs" />
