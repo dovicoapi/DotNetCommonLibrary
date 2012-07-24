@@ -50,6 +50,7 @@ namespace Dovico.CommonLibrary
                 aesTransform = new AesManaged();
                 aesTransform.Key = pwdGen.GetBytes(aesTransform.KeySize / 8);
                 aesTransform.IV = pwdGen.GetBytes(aesTransform.BlockSize / 8);
+                aesTransform.Padding = PaddingMode.ISO10126;// Pad with random characters rather than zeros
 
                 // Depending on if we're encrypting or decrypting create the proper transform object
                 ICryptoTransform ctTransform = (bEncrypt ? aesTransform.CreateEncryptor() : aesTransform.CreateDecryptor());
@@ -77,5 +78,16 @@ namespace Dovico.CommonLibrary
             return bReturnVal;
         }
 
+
+        // Method used to Hash a value.
+        //
+        // Returns the base64 encoded hash
+        public static string Hash(string sValue, string sSalt)
+        {
+            // Create an SHA1 hash object with our salt value, get the hash of the value passed to us, and then return the base64 string 
+            // representation of the hash to the caller
+            HMACSHA1 encSHA1 = new HMACSHA1(Encoding.UTF8.GetBytes(sSalt));
+            return Convert.ToBase64String(encSHA1.ComputeHash(Encoding.UTF8.GetBytes(sValue)));
+        }
     }
 }
