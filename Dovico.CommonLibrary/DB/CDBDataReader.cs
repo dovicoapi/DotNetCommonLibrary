@@ -18,6 +18,8 @@ namespace Dovico.CommonLibrary.DB
         public DateTime GetDate(string sFieldName) { return Get<DateTime>(sFieldName); }
         public double GetDouble(string sFieldName) { return Get<double>(sFieldName); }
         public CDovicoID GetID(string sFieldName) { return Get<long>(sFieldName); }
+        public int GetInt(string sFieldName) { return Get<int>(sFieldName); }
+        public long GetLong(string sFieldName) { return Get<long>(sFieldName); }
         
         // A generic method for grabbing values from the data reader
         protected T Get<T>(string sFieldName)
