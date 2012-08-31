@@ -97,6 +97,7 @@ namespace Dovico.CommonLibrary
 
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2012-04-23" reason="Created"/>
+        /// <modified author="C. Gerard Gallant" date="2012-08-31" reason="Fixed an issue where if there are unicode characters in the content being sent, the content length was not set correctly. sPostPutData.Length is not good enough, need to pass the string through the Encoding.UTF8.GetByteCount function."/>
         /// </history>
         public static void MakeAPIRequest(APIRequestResult aRequestResult)
         {
@@ -111,7 +112,7 @@ namespace Dovico.CommonLibrary
                 hwrAPIRequest.Accept = sContentType;
                 hwrAPIRequest.Method = aRequestResult.RequestHttpMethod; // GET, PUT, POST, DELETE, etc
                 hwrAPIRequest.ContentType = sContentType;                
-                hwrAPIRequest.ContentLength = sPostPutData.Length;
+                hwrAPIRequest.ContentLength = Encoding.UTF8.GetByteCount(sPostPutData);//Necessary if the string contains unicode characters
 
                 // If there is data to be included with the request then...
                 if (sPostPutData != "")

@@ -58,6 +58,7 @@ namespace Dovico.CommonLibrary.DB
 
         public int ExecuteScalarInt(string sSQL) { return ExecuteScalar<int>(sSQL); }
         public CDovicoID ExecuteScalarID(string sSQL) { return ExecuteScalar<long>(sSQL); }
+        public string ExecuteScalarString(string sSQL) { return ExecuteScalar<string>(sSQL); }
 
         // A generic method for the ExecuteScalar methods (T is the return type, Y is the default value if we were not able to grab the requested
         // value)
