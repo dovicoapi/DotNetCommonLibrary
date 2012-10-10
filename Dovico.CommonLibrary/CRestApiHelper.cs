@@ -209,6 +209,7 @@ namespace Dovico.CommonLibrary
         /// <returns>string (the error response)</returns>
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2012-01-10" reason="Created"/>
+        /// <modified author="C. Gerard Gallant" date="2012-10-10" reason="While doing some reading on Encoding.Default, I found that it is generally not recommended to to use (http://msdn.microsoft.com/en-us/library/system.text.encoding.default.aspx). I've modified it to use UTF8 instead. Turned out the issue we were seeing was an unexpected content-type value was being specified so now if the request wasn't for JSON, we return the error as XML."/>
         /// </history>
         protected static string BuildErrorReturnString(HttpStatusCode iStatusCode, string sDescription, string sContentType)
         {
@@ -222,16 +223,16 @@ namespace Dovico.CommonLibrary
                 DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebFaultExceptionDetails));
                 ser.WriteObject(msStream, wfedContent);
             }
-            else if ((sContentType.Contains(MIME_TYPE_TEXT_XML)) || (sContentType.Contains(MIME_TYPE_APPLICATION_XML)))
+            else // Any other type of request is assumed to be XML (just in case an unexpected type is requested, we don't want to return an empty string if there was an error)
             {
                 // Convert the XML into a string
                 DataContractSerializer ser = new DataContractSerializer(typeof(WebFaultExceptionDetails));
                 ser.WriteObject(msStream, wfedContent);
             } // End if
 
-
+           
             // Return the stream's content as a string
-            return Encoding.Default.GetString(msStream.ToArray());
+            return Encoding.UTF8.GetString(msStream.ToArray());
         }
 
     }

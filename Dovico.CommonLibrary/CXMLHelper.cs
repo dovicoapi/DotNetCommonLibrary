@@ -15,26 +15,42 @@ namespace Dovico.CommonLibrary
         // Helper to pull a node's value returning the Default value should the requested node not exist or is empty
         public static string GetChildNodeValue(XmlElement xeElement, string sTagName, string sDefaultValue)
         {
-            // Loop through the element's child nodes...(we were doing xeElement.getElementsByTagName originally but it was returning us even elements of sub-nodes which
-            // is not desired)
+            XmlNode xnChild = GetChildNode(xeElement, sTagName);
+            if (xnChild != null)
+            {
+                // Grab the first child of the element (the text node itself). If we have an object then return it's value 
+                XmlNode xnFirstChild = xnChild.FirstChild;
+                if (xnFirstChild != null) { return xnFirstChild.Value; }
+            } // End if (xnChild != null)
+
+            // Either the tag wasn't found OR there was no value provided. Return the default value to the caller instead
+            return sDefaultValue;
+        }
+
+
+        // Helper that returns a requested child node in the element specified (returns null if not found)
+        protected static XmlNode GetChildNode(XmlElement xeElement, string sTagName)
+        {
+            // Loop through the element's child nodes...(we were doing xeElement.getElementsByTagName originally but it was returning us even
+            // elements of sub-nodes which is not desired)
             for (XmlNode xnChild = xeElement.FirstChild; xnChild != null; xnChild = xnChild.NextSibling)
             {
                 // If the current child node is an element AND is the element we're looking for then...
                 if ((xnChild.NodeType == XmlNodeType.Element) && (sTagName.Equals(xnChild.Name)))
                 {
-                    // Grab the first child. If we have an object then return it's value 
-                    XmlNode xnFirstChild = xnChild.FirstChild;
-                    if (xnFirstChild != null) { return xnFirstChild.Value; }
-                    
-                    // We found the item we were looking for so exit this loop now (in the event the element had no text child node)
-                    break;
+                    // Pass the node back to the caller (exits the loop)
+                    return xnChild;
                 } // End if ((xnChild.NodeType == XmlNodeType.Element) && (sTagName.Equals(xnChild.Name)))
             } // End of the for (XmlNode xnChild = xnNode.FirstChild; xnChild != null; xnChild = xnChild.NextSibling) loop.
 
 
-            // Either the tag wasn't found OR there was no value provided. Return the default value to the caller instead
-            return sDefaultValue;
+            // We didn't find the child node that was requested
+            return null;
         }
+
+
+        // Helper that tells the caller if the requested element is a direct child of the element specified or not
+        public static bool DoesChildNodeExist(XmlElement xeElement, string sTagName) { return (GetChildNode(xeElement, sTagName) != null); }
 
 
         // Helper to replace all unsafe XML characters with safe ones
