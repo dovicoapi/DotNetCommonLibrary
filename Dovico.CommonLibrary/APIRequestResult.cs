@@ -19,6 +19,11 @@ namespace Dovico.CommonLibrary
         public string ResultPrevPageURI { get; set; }
         public string ResultNextPageURI { get; set; }
 
+        // When we make a request there is a chance that we might hit a throttle limit (currently set at 5 requests per second). If we receive a
+        // throttle error, we will wait a bit and retry but we don't want to retry forever or we'd enter into an infinite loop so this variable
+        // allows us to count how many retries we've done and if we hit our limit we stop trying the request again.
+        public int RequestRetryCount { get; set; }
+
         // Protected member variables
         protected string m_sRequestURI = "";                        
         protected string m_sRequestErrorMessage = "";        
@@ -51,6 +56,7 @@ namespace Dovico.CommonLibrary
             RequestResult = "";
             ResultPrevPageURI = Constants.URI_NOT_AVAILABLE;
             ResultPrevPageURI = Constants.URI_NOT_AVAILABLE;
+            RequestRetryCount = 0;
         }
 
 

@@ -3,6 +3,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading;
 using System.Web;
 
 namespace Dovico.CommonLibrary
@@ -16,6 +17,10 @@ namespace Dovico.CommonLibrary
 
         // The root URI for REST API calls
         protected static string m_sRootURI = "https://api.dovico.com/";
+
+        // The maximum number of times we will retry a request when receiving a throttle error
+        protected static int MAX_REQUEST_RETRY_COUNT = 5;
+
 
         /// <summary>
         /// Builds up a full URI that is used to call the REST API
@@ -98,6 +103,7 @@ namespace Dovico.CommonLibrary
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2012-04-23" reason="Created"/>
         /// <modified author="C. Gerard Gallant" date="2012-08-31" reason="Fixed an issue where if there are unicode characters in the content being sent, the content length was not set correctly. sPostPutData.Length is not good enough, need to pass the string through the Encoding.UTF8.GetByteCount function."/>
+        /// <modified author="C. Gerard Gallant" date="2012-11-26" reason="A coworker is hitting the throttle limit of the API so an attempt to make things easier is being attempted here where we will re-try the call for a limited number of times before just returning with an error."/>
         /// </history>
         public static void MakeAPIRequest(APIRequestResult aRequestResult)
         {
@@ -158,6 +164,19 @@ namespace Dovico.CommonLibrary
                     HttpWebResponse hwrResponse = (HttpWebResponse)weException.Response;
                     iStatusCode = hwrResponse.StatusCode;
                     sDescription = hwrResponse.StatusDescription;
+
+                    // If this is a throttle error and if we have not yet reached the maximum number of retries then...
+                    if ((iStatusCode == HttpStatusCode.ServiceUnavailable) && (aRequestResult.RequestRetryCount < MAX_REQUEST_RETRY_COUNT))
+                    {
+                        // Sleep for 1 second
+                        Thread.Sleep(1000);
+
+                        // Increment our counter and make this request again. Exit so that the rest of this funtion doesn't execute.
+                        aRequestResult.RequestRetryCount += 1;
+                        MakeAPIRequest(aRequestResult);
+                        return;
+                    } // End if ((iStatusCode == HttpStatusCode.ServiceUnavailable) && (aRequestResult.RequestRetryCount < MAX_REQUEST_RETRY_COUNT))
+
 
                     Stream sResponseStream = hwrResponse.GetResponseStream();
                     WebFaultExceptionDetails wfedContent = null;
