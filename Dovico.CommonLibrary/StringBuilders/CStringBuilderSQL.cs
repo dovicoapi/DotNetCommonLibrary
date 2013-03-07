@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dovico.CommonLibrary
+namespace Dovico.CommonLibrary.StringBuilders
 {
     public class CStringBuilderSQL : CStringBuilder
     {

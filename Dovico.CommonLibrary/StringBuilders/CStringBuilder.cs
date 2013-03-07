@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Dovico.CommonLibrary
+namespace Dovico.CommonLibrary.StringBuilders
 {
     public class CStringBuilder
     {

@@ -66,6 +66,24 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCalendar|AnyCPU'">
+    <OutputPath>bin\ReleaseCalendar\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseTimerStandAlone|AnyCPU'">
+    <OutputPath>bin\ReleaseTimerStandAlone\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -79,9 +97,10 @@
     <Compile Include="CEncryption.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CRestApiHelper.cs" />
-    <Compile Include="CStringBuilder.cs" />
-    <Compile Include="CStringBuilderSQL.cs" />
-    <Compile Include="CStringBuilderXML.cs" />
+    <Compile Include="StringBuilders\CStringBuilder.cs" />
+    <Compile Include="StringBuilders\CStringBuilderHTML.cs" />
+    <Compile Include="StringBuilders\CStringBuilderSQL.cs" />
+    <Compile Include="StringBuilders\CStringBuilderXML.cs" />
     <Compile Include="CXMLHelper.cs" />
     <Compile Include="CDateHelper.cs" />
     <Compile Include="Data\CAssignments.cs" />

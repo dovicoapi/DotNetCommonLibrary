@@ -72,6 +72,7 @@ namespace Dovico.CommonLibrary
         /// <history>
         /// <modified author="C. Gerard Gallant" date="2011-11-24" reason="Created"/>
         /// <modified author="C. Gerard Gallant" date="2012-04-23" reason="Created an overload of this method and pushed the code there"/>
+        /// <modified author="C. Gerard Gallant" date="2013-03-06" reason="Realized that the Content-Type value was not being passed along in the APIRequestResult object"/>
         /// </history>
         public static string MakeAPIRequest(string sURI, string sHttpMethod, string sContentType, string sPostPutData,
             string sConsumerSecret, string sDataAccessToken)
@@ -82,6 +83,7 @@ namespace Dovico.CommonLibrary
             aRequestResult.SetRequestURI(sURI);
             aRequestResult.RequestHttpMethod = sHttpMethod;
             aRequestResult.RequestPostPutData = sPostPutData;
+            aRequestResult.ContentType = sContentType;
 
             // Call the overloaded method to handle the work and then return the result object to the caller 
             MakeAPIRequest(aRequestResult);
